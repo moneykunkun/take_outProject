@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 通用结果的返回类，将
+ * 通用结果的返回类，服务器响应的数据最终都会封装成对象
  * @param <T>
  */
 @Data
@@ -33,6 +33,7 @@ public class R<T> {
         return r;
     }
 
+    //操作map，生成动态数据
     public R<T> add(String key, Object value) {
         this.map.put(key, value);
         return this;
