@@ -155,7 +155,7 @@
               //   ],
               // },
             ],
-            iframeUrl: 'page/member/list.html',
+            iframeUrl: 'page/member/list.html',             //url地址
             headTitle: '员工管理',
             goBackFlag: false,
             loading: true,
@@ -196,7 +196,7 @@
           menuHandle(item, goBackFlag) {
             this.loading = true
             this.menuActived = item.id
-            this.iframeUrl = item.url
+            this.iframeUrl = item.url           //点击菜单的时候就在在切换URL地址
             this.headTitle = item.name
             this.goBackFlag = goBackFlag
             this.closeLoading()
