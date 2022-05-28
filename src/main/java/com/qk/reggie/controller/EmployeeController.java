@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 
-@Slf4j
+@Slf4j      //日志注解
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
@@ -30,7 +30,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/login")
-    public R<Employee> login(HttpServletRequest request, @RequestBody Employee employee){
+    public R<Employee> login(HttpServletRequest request, @RequestBody Employee employee){       //requestBody接收json数据
         //1.将页面提交的密码进行MD5加密处理
          String password = employee.getPassword();     //获取密码
          password = DigestUtils.md5DigestAsHex(password.getBytes());
