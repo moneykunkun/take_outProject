@@ -38,21 +38,32 @@ public class EmployeeController {
         LambdaQueryWrapper<Employee> queryWrapper =new LambdaQueryWrapper<>();
         queryWrapper.eq(Employee::getUsername,employee.getUsername());
         //查询用户
-         Employee emp = employeeService.getOne(queryWrapper);       //数据库中的唯一索引 所有getOne
+         Employee emp = employeeService.getOne(queryWrapper);       //数据库中的唯一索引 所以使用getOne
         //3.处理查询结果
         if (emp ==null){
             return R.error("登录失败！");
         }
         //4.密码比对，如果不一致则返回登录失败
         if (!emp.getPassword().equals(password)){
-            return R.error("登录失败！");
+            return R.error("密码错误，登录失败！");
         }
         //5.查看员工状态，看是否被禁用，0表示禁用
         if (emp.getStatus()==0){
-            return R.error("账号已禁用");
+            return R.error("该账号已禁用！");
         }
         //6.登录成功，将员工id存入session并返回登录结果
          request.getSession().setAttribute("employee",emp.getId());
         return R.success(emp);
+    }
+
+    /**
+     * 退出功能
+     * @return
+     */
+    @PostMapping("/logout")
+    public R<String> logout(HttpServletRequest request){
+        //1.清理session中保存员工id
+        request.getSession().removeAttribute("employee");
+        return R.success("退出成功！");
     }
 }
