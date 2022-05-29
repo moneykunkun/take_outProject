@@ -51,6 +51,11 @@ public class LoginCheckFilter implements Filter {
         //4.判断登录状态，如果已经登录，则直接放行
         if (request.getSession().getAttribute("employee") !=null){
             log.info("用户已登陆，用户ID为{}",request.getSession().getAttribute("employee"));
+
+            Long empId =(Long) request.getSession().getAttribute("employee");
+            //将获取到的用户id存入当前线程
+            BaseContext.setCurrentId(empId);
+
             filterChain.doFilter(request,response);
             return;
         }
