@@ -67,7 +67,6 @@ public class CommonController {
      */
     @GetMapping("/download")
     public void download(String name, HttpServletResponse response){
-
         try {
             //通过输入流读取文件内容
             FileInputStream fileInputStream =new FileInputStream(new File(basePath+name));
