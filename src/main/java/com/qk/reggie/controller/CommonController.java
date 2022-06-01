@@ -4,12 +4,17 @@ import com.qk.reggie.common.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -54,5 +59,38 @@ public class CommonController {
         }
         //文件上传完毕后返回文件名称，将文件存入数据库
         return R.success(fileName);
+    }
+
+    /**
+     * 文件下载
+     * @param name
+     */
+    @GetMapping("/download")
+    public void download(String name, HttpServletResponse response){
+
+        try {
+            //通过输入流读取文件内容
+            FileInputStream fileInputStream =new FileInputStream(new File(basePath+name));
+            //通过输出流将文件写回浏览器，在浏览器展示图片
+            //在这里需要通过响应对象获取输出流
+            final ServletOutputStream outputStream = response.getOutputStream();
+            //设置响应回去的文件类型
+            response.setContentType("img/jpeg");
+
+            byte[] bytes =new byte[1024];
+            int len =0;
+            //一直读取文件
+            while ((len =fileInputStream.read(bytes)) !=-1){
+               //将读取的文件写入
+                outputStream.write(bytes,0,len);
+                //刷新缓冲区
+                outputStream.flush();
+            }
+            //关闭资源
+            outputStream.close();
+            fileInputStream.close();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }
