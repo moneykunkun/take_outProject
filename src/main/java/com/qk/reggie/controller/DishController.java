@@ -82,10 +82,12 @@ public class DishController {
             Long categoryId = item.getCategoryId();
             //2、再通过categoryId拿到菜品名称
             //先拿到分类对象
-            final Category category = categoryService.getById(categoryId);
+             Category category = categoryService.getById(categoryId);
             //拿到分类名称
-            final String categoryName = category.getName();
-            dishDto.setCategoryName(categoryName);
+            if (category !=null){
+                String categoryName = category.getName();
+                dishDto.setCategoryName(categoryName);
+            }
             return dishDto;
         }).collect(Collectors.toList());
 
