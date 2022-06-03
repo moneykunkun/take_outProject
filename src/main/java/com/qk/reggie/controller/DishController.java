@@ -131,6 +131,8 @@ public class DishController {
         //构造查询条件
         LambdaQueryWrapper<Dish> queryWrapper =new LambdaQueryWrapper<>();
         queryWrapper.eq(dish.getCategoryId() !=null,Dish::getCategoryId,dish.getCategoryId());
+        //添加查询条件：起售状态为1的
+        queryWrapper.eq(Dish::getStatus,1);
 
         //添加一个排序条件 按sort升序，再按更新时间降序
         queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
