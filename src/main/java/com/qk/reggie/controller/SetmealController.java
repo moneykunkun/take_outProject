@@ -103,6 +103,7 @@ public class SetmealController {
     @DeleteMapping
     public R<String> delete(@RequestParam List<Long> ids){
         log.info("ids：{}",ids);
-        return null;
+        setmealService.removeWithDish(ids);
+        return R.success("套餐删除成功");
     }
 }
