@@ -41,4 +41,19 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         //保存套餐和菜品的关联关系，操作Setmeal_dish，执行insert操作
         setmealDishService.saveBatch(setmealDishes);
     }
+
+    /**
+     * 删除套餐，同时删除套餐和菜品的关联数据
+     * @param ids
+     */
+    @Override
+    public void removeWithDish(List<Long> ids) {
+        //查询套餐的状态，仅起售状态的可以删除
+
+        //如果不能删除，抛出业务异常
+
+        //可以删除，先删除套餐表中的数据
+
+        //删除关系表中的数据
+    }
 }

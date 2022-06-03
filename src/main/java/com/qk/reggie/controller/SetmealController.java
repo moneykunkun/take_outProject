@@ -94,4 +94,15 @@ public class SetmealController {
         setmealDtoPage.setRecords(list);
         return R.success(setmealDtoPage);
     }
+
+    /**
+     * 删除套餐功能
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    public R<String> delete(@RequestParam List<Long> ids){
+        log.info("ids：{}",ids);
+        return null;
+    }
 }
