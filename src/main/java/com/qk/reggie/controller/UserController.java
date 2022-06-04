@@ -1,5 +1,6 @@
 package com.qk.reggie.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.qk.reggie.common.R;
 import com.qk.reggie.entity.User;
 import com.qk.reggie.service.UserService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -48,4 +50,43 @@ public class UserController {
      return R.error("短信发送失败");
     }
 
+
+    /**
+     * 移动端登录
+     * @param map
+     * @param session
+     * @return
+     */
+    @PostMapping("/login")
+    public R<User> login(@RequestBody Map map, HttpSession session) {
+
+        log.info(map.toString());
+        //获取手机号
+        final String phone = map.get("phone").toString();
+        //获取验证码
+        final String code = map.get("code").toString();
+        //从session中获取保存的验证码
+        final Object codeInSession = session.getAttribute(phone);
+        //页面提交的验证码和session中保存的验证码比对
+        if (codeInSession !=null && codeInSession.equals(code)){
+            //比对成功，说明登录成功
+            LambdaQueryWrapper<User> queryWrapper =new LambdaQueryWrapper<>();
+            //查询数据库中的手机号
+            queryWrapper.eq(User::getPhone,phone);
+
+             User user = userService.getOne(queryWrapper);
+            if (user ==null){
+                //判断当前手机号是否为新用户，如果是新用户就自动完成注册
+                user =new User();
+                user.setPhone(phone);
+                user.setStatus(1);
+                //完成注册
+                userService.save(user);
+            }
+            //登录成功后，将userID存入session中
+            session.setAttribute("user",user.getId());
+            return  R.success(user);
+        }
+        return R.error("登录失败");
+    }
 }
