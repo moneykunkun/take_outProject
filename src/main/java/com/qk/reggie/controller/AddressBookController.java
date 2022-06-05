@@ -1,15 +1,13 @@
 package com.qk.reggie.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.qk.reggie.common.BaseContext;
 import com.qk.reggie.common.R;
 import com.qk.reggie.entity.AddressBook;
 import com.qk.reggie.service.AddressBookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -34,5 +32,59 @@ public class AddressBookController {
         return R.success(addressBook);
     }
 
+    /**
+     * 设置默认地址
+     * @param addressBook
+     * @return
+     */
+    @PutMapping("default")
+    public R<AddressBook> setDefault(@RequestBody AddressBook addressBook){
+        log.info("addressBook:{}",addressBook);
+        //构造查询条件
+        LambdaQueryWrapper<AddressBook> queryWrapper =new LambdaQueryWrapper<>();
+        queryWrapper.eq(AddressBook::getUserId,BaseContext.getCurrentId());
 
+      //未完成查询  queryWrapper
+        addressBookService.update(queryWrapper);
+
+        addressBook.setIsDefault(1);
+        //update address_book set is_default =1 where id =?
+        addressBookService.updateById(addressBook);
+        return R.success(addressBook);
+    }
+
+    /**
+     * 根据id 查询地址
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public R get(@PathVariable Long id){
+        AddressBook addressBook =addressBookService.getById(id);
+        if (addressBook != null){
+            return R.success(addressBook);
+        }
+        else {
+            return R.error("没有找到该对象！");
+        }
+    }
+
+    /**
+     * 查询默认地址
+     * @return
+     */
+    @GetMapping("default")
+    public R<AddressBook> getDefault(){
+        LambdaQueryWrapper<AddressBook> queryWrapper =new LambdaQueryWrapper<>();
+        queryWrapper.eq(AddressBook::getUserId,BaseContext.getCurrentId());
+        queryWrapper.eq(AddressBook::getIsDefault,1);
+
+        //SQL:select * from address_book where user_id =? and is_default =1
+        AddressBook addressBook =addressBookService.getOne(queryWrapper);
+        if (null == addressBook){
+            return R.error("没有找到该对象");
+        }else {
+            return R.success(addressBook);
+        }
+    }
 }
