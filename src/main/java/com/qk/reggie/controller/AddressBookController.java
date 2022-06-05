@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/addressBook")
@@ -86,5 +88,24 @@ public class AddressBookController {
         }else {
             return R.success(addressBook);
         }
+    }
+
+    /**
+     * 查询指定用户的全部地址
+     * @param addressBook
+     * @return
+     */
+    @GetMapping("/list")
+    public R<List<AddressBook>> list(AddressBook addressBook){
+        addressBook.setUserId(BaseContext.getCurrentId());
+        log.info("addressBook :{}",addressBook);
+
+        //条件构造器
+        LambdaQueryWrapper<AddressBook> queryWrapper =new LambdaQueryWrapper<>();
+        queryWrapper.eq(null !=addressBook.getUserId(),AddressBook::getUserId,addressBook.getUserId());
+        queryWrapper.orderByDesc(AddressBook::getUpdateTime);
+
+        //SQL :select * from address_book where user_id =? order by update_time desc
+        return R.success(addressBookService.list(queryWrapper));
     }
 }
