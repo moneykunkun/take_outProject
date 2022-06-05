@@ -1,6 +1,7 @@
 package com.qk.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.qk.reggie.common.BaseContext;
 import com.qk.reggie.common.R;
 import com.qk.reggie.entity.AddressBook;
@@ -33,24 +34,20 @@ public class AddressBookController {
         addressBookService.save(addressBook);
         return R.success(addressBook);
     }
-
     /**
      * 设置默认地址
-     * @param addressBook
-     * @return
      */
     @PutMapping("default")
-    public R<AddressBook> setDefault(@RequestBody AddressBook addressBook){
-        log.info("addressBook:{}",addressBook);
-        //构造查询条件
-        LambdaQueryWrapper<AddressBook> queryWrapper =new LambdaQueryWrapper<>();
-        queryWrapper.eq(AddressBook::getUserId,BaseContext.getCurrentId());
-
-      //未完成查询  queryWrapper
-        addressBookService.update(queryWrapper);
+    public R<AddressBook> setDefault(@RequestBody AddressBook addressBook) {
+        log.info("addressBook:{}", addressBook);
+        LambdaUpdateWrapper<AddressBook> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(AddressBook::getUserId, BaseContext.getCurrentId());
+        wrapper.set(AddressBook::getIsDefault, 0);
+        //SQL:update address_book set is_default = 0 where user_id = ?
+        addressBookService.update(wrapper);
 
         addressBook.setIsDefault(1);
-        //update address_book set is_default =1 where id =?
+        //SQL:update address_book set is_default = 1 where id = ?
         addressBookService.updateById(addressBook);
         return R.success(addressBook);
     }
