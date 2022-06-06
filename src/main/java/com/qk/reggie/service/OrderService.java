@@ -5,5 +5,5 @@ import com.qk.reggie.entity.Orders;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface OrdersService extends IService<Orders> {
+public interface OrderService extends IService<Orders> {
 }
