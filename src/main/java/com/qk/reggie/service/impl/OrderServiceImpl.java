@@ -69,9 +69,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         //原子操作
         AtomicInteger amount =new AtomicInteger(0);
         List<OrderDetail> orderDetails = shoppingCarts.stream().map((item)->{
-            OrderDetail orderDetail =new OrderDetail();
-
-
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrderId(orderId);
+            orderDetail.setNumber(item.getNumber());
+            orderDetail.setDishFlavor(item.getDishFlavor());
+            orderDetail.setDishId(item.getDishId());
+            orderDetail.setSetmealId(item.getSetmealId());
+            orderDetail.setName(item.getName());
+            orderDetail.setImage(item.getImage());
+            orderDetail.setAmount(item.getAmount());
+            amount.addAndGet(item.getAmount().multiply(new BigDecimal(item.getNumber())).intValue());
+            return orderDetail;
         }).collect(Collectors.toList());
 
         //设置订单实体的其他属性
