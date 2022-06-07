@@ -102,5 +102,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         orderDetailService.saveBatch(orderDetails);
 
         //下单完成后，清空购物车数据
+        shoppingCartService.remove(queryWrapper);
     }
 }
