@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qk.reggie.common.BaseContext;
 import com.qk.reggie.common.CustomException;
-import com.qk.reggie.entity.AddressBook;
-import com.qk.reggie.entity.Orders;
-import com.qk.reggie.entity.ShoppingCart;
-import com.qk.reggie.entity.User;
+import com.qk.reggie.entity.*;
 import com.qk.reggie.mapper.OrderMapper;
 import com.qk.reggie.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -52,7 +51,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         final List<ShoppingCart> shoppingCarts = shoppingCartService.list(queryWrapper);
 
         //对购物车数据进行判断
-        if (shoppingCarts ==null){
+        if (shoppingCarts ==null || shoppingCarts.size()==0){
             throw  new CustomException("购物车为空，不能下单");
         }
         //查询用户信息
@@ -65,13 +64,22 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
              throw new CustomException("地址信息为空，不能下单");
          }
         //向订单表中添加数据
-        final long orderId = IdWorker.getId();
+         long orderId = IdWorker.getId();       //订单号
+
+        //原子操作
+        AtomicInteger amount =new AtomicInteger(0);
+        List<OrderDetail> orderDetails = shoppingCarts.stream().map((item)->{
+            OrderDetail orderDetail =new OrderDetail();
+
+
+        }).collect(Collectors.toList());
+
         //设置订单实体的其他属性
         orders.setId(orderId);
         orders.setOrderTime(LocalDateTime.now());
         orders.setCheckoutTime(LocalDateTime.now());
         orders.setStatus(2);        //待派送
-        orders.setAmount(new BigDecimal(amount.get()));//总金额
+        orders.setAmount(new BigDecimal(amount.get()));     //总金额
         orders.setUserId(currentId);        //用户id
         orders.setNumber(String.valueOf(orderId));      //订单号
         orders.setUserName(user.getName());
@@ -83,6 +91,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
                 + (addressBook.getDetail() == null ? "" : addressBook.getDetail()));
         this.save(orders);
         //向订单明细表插入数据，多条数据
+        orderDetailService.saveBatch(orderDetails);
+
         //下单完成后，清空购物车数据
     }
 }
