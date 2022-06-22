@@ -48,6 +48,15 @@ public class DishController {
     }
 
     /**
+     * 删除菜品
+     * @return
+     */
+    @DeleteMapping("/ids")
+    public R<String> deleteByIds(@PathVariable int ids){
+        dishService.removeById(ids);
+        return R.success("删除成功");
+    }
+    /**
      * 菜品信息的分页查询
      * @param page
      * @param pageSize
