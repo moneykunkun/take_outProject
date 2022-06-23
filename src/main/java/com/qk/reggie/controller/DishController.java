@@ -57,6 +57,30 @@ public class DishController {
         return R.success("删除成功");
     }
     /**
+     * 修改售卖状态（起售，停售）
+     * @param status
+     * @param ids
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public R<String> statusWithIds(@PathVariable("status") Integer status,@RequestParam List<Long> ids) {
+        //构造一个条件构造器
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(ids != null, Dish::getId, ids);
+        queryWrapper.orderByDesc(Dish::getPrice);
+        //根据条件进行批量查询
+        List<Dish> list = dishService.list(queryWrapper);
+        for (Dish dish : list) {
+            if (dish != null) {
+                //把浏览器传入的status参数赋值给菜品
+                dish.setStatus(status);
+                dishService.updateById(dish);
+            }
+        }
+        return R.success("售卖状态修改成功");
+    }
+
+    /**
      * 菜品信息的分页查询
      * @param page
      * @param pageSize
