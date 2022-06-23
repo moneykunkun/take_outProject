@@ -108,6 +108,30 @@ public class SetmealController {
     }
 
     /**
+     * 修改套餐的售卖状态
+     *
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public R<String> statusWithIds(@PathVariable("status") Integer status, @RequestParam List<Long> ids) {
+        //构造一个条件构造器
+        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(ids != null, Setmeal::getId, ids);
+        queryWrapper.orderByDesc(Setmeal::getPrice);
+        //根据条件进行批量查询
+        List<Setmeal> list = setmealService.	list(queryWrapper);
+        for (Setmeal setmeal : list) {
+            if (list != null) {
+                //把浏览器传入的status参数复制给套餐
+                setmeal.setStatus(status);
+                setmealService.updateById(setmeal);
+            }
+        }
+        return R.success("售卖状态修改成功");
+    }
+
+
+    /**
      * 移动端
      * 套餐查询
      * @param setmeal
