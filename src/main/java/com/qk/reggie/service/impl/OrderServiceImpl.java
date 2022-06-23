@@ -108,6 +108,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         //下单完成后，清空购物车数据
         shoppingCartService.remove(queryWrapper);
     }
+
     /**
      * 后台查询订单明细
      *
@@ -165,5 +166,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         pageDto.setRecords(collect);
         return pageDto;
     }
+
 
 }
