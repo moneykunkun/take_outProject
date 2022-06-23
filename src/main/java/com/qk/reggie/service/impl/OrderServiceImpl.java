@@ -2,13 +2,17 @@ package com.qk.reggie.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qk.reggie.common.BaseContext;
 import com.qk.reggie.common.CustomException;
+import com.qk.reggie.dto.OrdersDto;
 import com.qk.reggie.entity.*;
 import com.qk.reggie.mapper.OrderMapper;
 import com.qk.reggie.service.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,4 +108,62 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         //下单完成后，清空购物车数据
         shoppingCartService.remove(queryWrapper);
     }
+    /**
+     * 后台查询订单明细
+     *
+     * @param page
+     * @param pageSize
+     * @param number
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public Page<OrdersDto> empPage(int page, int pageSize, String number, String beginTime, String endTime) {
+        Page<Orders> pageInfo = new Page<>(page, pageSize);
+        Page<OrdersDto> pageDto = new Page<>();
+
+        //创建条件构造器
+        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
+        //添加条件，根据number进行like模糊查询
+        queryWrapper.like(number != null, Orders::getNumber, number);
+        queryWrapper.gt(StringUtils.isNotEmpty(beginTime), Orders::getOrderTime, beginTime);
+        queryWrapper.lt(StringUtils.isNotEmpty(endTime), Orders::getOrderTime, endTime);
+        //添加排序条件(根据更新时间降序排序)
+        queryWrapper.orderByDesc(Orders::getOrderTime);
+        this.page(pageInfo, queryWrapper);
+        //将其除了records中的内存复制到pageDto中
+        BeanUtils.copyProperties(pageInfo, pageDto, "records");
+
+        List<Orders> records = pageInfo.getRecords();
+        List<OrdersDto> collect = records.stream().map((item) -> {
+            OrdersDto ordersDto = new OrdersDto();
+            //对象拷贝
+            BeanUtils.copyProperties(item, ordersDto);
+            LambdaQueryWrapper<OrderDetail> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            //根据订单id查询订单详细信息
+            lambdaQueryWrapper.eq(OrderDetail::getOrderId, item.getId());
+
+            List<OrderDetail> orderDetails = orderDetailService.list(lambdaQueryWrapper);
+            ordersDto.setOrderDetails(orderDetails);
+
+            //根据userId查询用户姓名
+            Long userID = item.getUserId();
+            User user = userService.getById(userID);
+            ordersDto.setUserName(user.getName());
+            ordersDto.setPhone(user.getPhone());
+
+            //获取地址信息
+            Long addressBookId = item.getAddressBookId();
+            AddressBook addressBook = addressBookService.getById(addressBookId);
+            ordersDto.setAddress(addressBook.getDetail());
+            ordersDto.setConsignee(addressBook.getConsignee());
+
+            return ordersDto;
+        }).collect(Collectors.toList());
+
+        pageDto.setRecords(collect);
+        return pageDto;
+    }
+
 }

@@ -1,6 +1,8 @@
 package com.qk.reggie.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.qk.reggie.dto.OrdersDto;
 import com.qk.reggie.entity.Orders;
 import org.springframework.stereotype.Service;
 
@@ -11,4 +13,15 @@ public interface OrderService extends IService<Orders> {
      * @param orders
      */
     public void submit(Orders orders);
+
+    /**
+     * 订单明细
+     * @param page
+     * @param pageSize
+     * @param number
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    public Page<OrdersDto> empPage(int page, int pageSize, String number, String beginTime, String endTime) ;
 }
