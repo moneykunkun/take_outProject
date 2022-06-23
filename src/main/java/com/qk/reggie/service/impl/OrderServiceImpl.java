@@ -132,7 +132,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         queryWrapper.lt(StringUtils.isNotEmpty(endTime), Orders::getOrderTime, endTime);
         //添加排序条件(根据更新时间降序排序)
         queryWrapper.orderByDesc(Orders::getOrderTime);
-        this.page(pageInfo, queryWrapper);
+         this.page(pageInfo, queryWrapper);
         //将其除了records中的内存复制到pageDto中
         BeanUtils.copyProperties(pageInfo, pageDto, "records");
 
