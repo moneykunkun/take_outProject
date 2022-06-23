@@ -2,6 +2,7 @@ package com.qk.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.qk.reggie.common.CustomException;
 import com.qk.reggie.common.R;
 import com.qk.reggie.dto.DishDto;
 import com.qk.reggie.entity.Category;
@@ -13,6 +14,7 @@ import com.qk.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -79,6 +81,37 @@ public class DishController {
         }
         return R.success("售卖状态修改成功");
     }
+    /**
+     * 批量删除菜品和单独删除菜品
+     *
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    @Transactional  //因为多表操作开启事务
+    public R<String> delete(@RequestParam List<Long> ids) {
+        //构造一个条件构造器
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        //判断浏览器传来的ids是否为空，并和菜品表中的id进行匹配
+        queryWrapper.in(ids != null, Dish::getId,ids);
+        List<Dish> list = dishService.list(queryWrapper);
+        for (Dish dish : list) {
+            //判断当前菜品是否在售卖阶段，0停售，1起售
+            if (dish.getStatus() == 0) {
+                //停售状态直接删除
+                dishService.removeById(dish.getId());
+                LambdaQueryWrapper<DishFlavor> dishFlavorLambdaQueryWrapper = new LambdaQueryWrapper<>();
+                //根据菜品id匹配口味表中的菜品id
+                dishFlavorLambdaQueryWrapper.eq(DishFlavor::getDishId, dish.getId());
+                //删除菜品id关联的口味表信息
+                dishFlavorService.remove(dishFlavorLambdaQueryWrapper);
+            }else {
+                throw new CustomException("此菜品还在售卖阶段，删除影响销售！");
+            }
+        }
+        return R.success("删除成功");
+    }
+
 
     /**
      * 菜品信息的分页查询
