@@ -47,11 +47,13 @@
             <version>1.18.20</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.76</version>
+            <version>1.2.75</version>
         </dependency>
+
 
         <dependency>
             <groupId>commons-lang</groupId>

@@ -82,6 +82,8 @@ public class EmployeeTest {
         employee.setCreateTime(LocalDateTime.now());
         employee.setUpdateTime(LocalDateTime.now());
         log.info("员工信息：{}",employee.toString());
+        //新增员工的时候，创建用户对象，调用接口方法，将数据插入到数据库
+        // 再从数据库查询用户信息和当前插入的用户信息对比，如果对比成功，表明新增成功
          boolean save = employeeService.save(employee);
         assertEquals("新增失败",true,save);
         System.out.println("新增成功");
