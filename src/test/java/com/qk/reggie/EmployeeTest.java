@@ -50,14 +50,13 @@ public class EmployeeTest {
         //查询用户
         Employee emp = employeeService.getOne(queryWrapper);
         //1.查询用户是否存在
-        assertNotNull("未查询到用户",emp);
+        assertNotNull("查询到用户,测试失败",emp);
         // 2.密码验证
-        assertEquals("密码不匹配",employee.getPassword(),emp.getPassword());
-        System.out.println("密码正确");
+        assertNotEquals("密码匹配",employee.getPassword(),emp.getPassword());
         //3.处理员工状态是否为禁用
        assertEquals("该账户已禁用",(int)emp.getStatus(),1);
         //4.用户存在，密码正确且用户状态未禁用，登录成功
-        System.out.println("登录成功！");
+        System.out.println("登录测试完毕！");
     }
 
     /**
@@ -83,7 +82,6 @@ public class EmployeeTest {
         employee.setUpdateTime(LocalDateTime.now());
         log.info("员工信息：{}",employee.toString());
         //新增员工的时候，创建用户对象，调用接口方法，将数据插入到数据库
-        // 再从数据库查询用户信息和当前插入的用户信息对比，如果对比成功，表明新增成功
          boolean save = employeeService.save(employee);
         assertEquals("新增失败",true,save);
         System.out.println("新增成功");
@@ -106,9 +104,9 @@ public class EmployeeTest {
         //添加排序条件，按更新时间排序
         queryWrapper.orderByDesc(Employee::getUpdateTime);
         //执行查询
-        final Page page1 = employeeService.page(pageInfo, queryWrapper);
-        assertNotNull("分页失败",page1);
-        System.out.println("分页成功!");
+         Page page1 = employeeService.page(pageInfo, queryWrapper);
+        assertNotNull("分页测试失败",page1);
+        System.out.println("分页测试成功!");
     }
 
     @Autowired
@@ -123,12 +121,12 @@ public class EmployeeTest {
      */
     @Test
     public void deleteById(){
-        //菜品id（20）必须是菜品数据库中有的数据，否则删除失败，测试 12345678
+        //菜品id（20）必须是菜品数据库中有的数据，否则删除失败
         Long ids =(long)123456789;
         log.info("删除菜品，id为：{}",ids);
         final boolean flag = categoryService.removeById(ids);
-        assertEquals("删除失败",false,flag);
-        System.out.println("删除成功");
+        assertEquals("删除成功，测试失败",false,flag);
+        System.out.println("测试删除通过");
     }
 
     /**

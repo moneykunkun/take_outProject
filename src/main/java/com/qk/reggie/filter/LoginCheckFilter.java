@@ -41,7 +41,7 @@ public class LoginCheckFilter implements Filter {
                 "/user/login"                       //移动端登录
         };
         //2.判断本次请求是否需要处理
-        final boolean check = check(urls, requestURI);
+        boolean check = check(urls, requestURI);
 
         //3.如果不需要处理，直接放行
         if (check){
@@ -87,7 +87,7 @@ public class LoginCheckFilter implements Filter {
      */
     public boolean check(String[] urls,String requestURI){
         for (String url :urls){
-            final boolean match = PATH_MATCHER.match(url, requestURI);
+             boolean match = PATH_MATCHER.match(url, requestURI);
             if (match){
                 //路径匹配成功
                 return true;

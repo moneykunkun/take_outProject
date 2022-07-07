@@ -26,20 +26,25 @@ public class Employee implements Serializable {
 
     private String sex;
 
-    private String idNumber;        //身份证号码
+    //身份证号码
+    private String idNumber;
 
     private Integer status;
 
-    @TableField(fill = FieldFill.INSERT)        //插入时填充字段
+    //插入时自动填充字段
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)         //插入和更新时填充字段
+    //插入和更新时填充字段
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    @TableField(fill = FieldFill.INSERT)            //插入时填充字段
+    //插入时填充字段
+    @TableField(fill = FieldFill.INSERT)
     private Long createUser;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)             //插入和更新时填充字段
+    //插入和更新时填充字段
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 
 }
