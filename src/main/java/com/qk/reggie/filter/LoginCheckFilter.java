@@ -19,7 +19,7 @@ import java.io.IOException;
 @Slf4j
 @WebFilter(filterName = "loginCheckFilter",urlPatterns = "/*")          //拦截路径
 public class LoginCheckFilter implements Filter {
-    //路径匹配器，支持通配符
+    //路径匹配器，支持通配符，Spring提供的工具包
     public static final AntPathMatcher PATH_MATCHER =new AntPathMatcher();
 
     @Override
