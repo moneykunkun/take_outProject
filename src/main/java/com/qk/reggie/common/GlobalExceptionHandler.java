@@ -18,14 +18,14 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public R<String> exceptionHandler(SQLIntegrityConstraintViolationException ex) {      //捕获到的异常
-        log.error(ex.getMessage());
+            log.error(ex.getMessage());
 
         if (ex.getMessage().contains("Duplicate entry")){       //表明用户已存在
             String[] split =ex.getMessage().split(" ");         //获取异常信息中的用户名
             String msg =split[2] +"已存在";
             return R.error(msg);
         }
-        return R.error("未知错误！");
+            return R.error("未知错误！");
     }
 
     /**
