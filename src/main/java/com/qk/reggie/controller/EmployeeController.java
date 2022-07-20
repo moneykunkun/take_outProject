@@ -121,9 +121,9 @@ public class EmployeeController {
     public R<String> update(HttpServletRequest request,@RequestBody Employee employee){
         log.info(employee.toString());
         //获取登录用户的id
-        Long empId =(Long)request.getSession().getAttribute("employee");
-        employee.setUpdateTime(LocalDateTime.now());        //设置更新时间
-        employee.setUpdateUser(empId);              //设置更新用户
+//        Long empId =(Long)request.getSession().getAttribute("employee");
+//        employee.setUpdateTime(LocalDateTime.now());        //设置更新时间
+//        employee.setUpdateUser(empId);              //设置更新用户
         //调用业务层方法（MP提供的）修改员工信息
         employeeService.updateById(employee);
         return R.success("员工信息修改成功！");
