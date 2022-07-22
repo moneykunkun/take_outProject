@@ -52,7 +52,7 @@ public class CommonController {
             dir.mkdirs();
         }
         try {
-            //文件转存到
+            //文件转存到指定位置
             file.transferTo(new File(basePath+fileName));
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,7 +72,8 @@ public class CommonController {
             FileInputStream fileInputStream =new FileInputStream(new File(basePath+name));
             //通过输出流将文件写回浏览器，在浏览器展示图片
             //在这里需要通过响应对象获取输出流
-            final ServletOutputStream outputStream = response.getOutputStream();
+            ServletOutputStream outputStream = response.getOutputStream();
+
             //设置响应回去的文件类型
             response.setContentType("img/jpeg");
 
