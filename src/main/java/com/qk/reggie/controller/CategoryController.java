@@ -94,7 +94,7 @@ public class CategoryController {
         queryWrapper.eq(category.getType() != null,Category::getType,category.getType());
 
         //添加排序条件
-        //先按sort升序排，再按更新时间降序排列
+        //先按sort升序排列，再按更新时间降序排列
         queryWrapper.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
         //查询
          List<Category> list = categoryService.list(queryWrapper);
