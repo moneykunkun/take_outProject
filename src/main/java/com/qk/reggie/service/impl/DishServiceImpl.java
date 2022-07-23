@@ -36,7 +36,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
         //获得菜品口味的集合
          List<DishFlavor> flavors = dishDto.getFlavors();
-        //lambda表达式，为集合中的每个flavors赋值菜品id
+        //stream流的方式遍历集合，lambda表达式，为集合中的每个flavors赋值菜品id
         flavors=flavors.stream().map((item) ->{
            item.setDishId(dishId);
            return item;
