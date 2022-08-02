@@ -35,6 +35,7 @@
             <scope>compile</scope>
         </dependency>
 
+        <!--mybatis-plus-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
@@ -47,7 +48,7 @@
             <version>1.18.20</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <!-- json序列化-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>

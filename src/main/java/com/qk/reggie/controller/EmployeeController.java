@@ -84,6 +84,7 @@ public class EmployeeController {
         employee.setCreateUser(empId);
         employee.setUpdateUser(empId);
 
+        //mp提供的方法
          employeeService.save(employee);
          return R.success("新增员工成功");
 
@@ -104,7 +105,7 @@ public class EmployeeController {
         //条件构造器
         LambdaQueryWrapper<Employee> queryWrapper =new LambdaQueryWrapper();
         //添加过滤条件
-        queryWrapper.like(StringUtils.hasText(name),Employee::getName,name);
+        queryWrapper.like(StringUtils.isEmpty(name),Employee::getName,name);
       //添加排序条件，按更新时间排序
         queryWrapper.orderByDesc(Employee::getUpdateTime);
         //执行查询
