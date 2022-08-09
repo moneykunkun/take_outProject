@@ -83,11 +83,9 @@ public class EmployeeController {
          Long empId = (Long) request.getSession().getAttribute("employee");
         employee.setCreateUser(empId);
         employee.setUpdateUser(empId);
-
         //mp提供的方法
          employeeService.save(employee);
          return R.success("新增员工成功");
-
     }
 
     /**

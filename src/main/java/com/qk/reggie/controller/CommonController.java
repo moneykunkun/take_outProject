@@ -68,9 +68,9 @@ public class CommonController {
     @GetMapping("/download")
     public void download(String name, HttpServletResponse response){
         try {
-            //通过输入流读取文件内容
+            //1.通过输入流读取文件内容
             FileInputStream fileInputStream =new FileInputStream(new File(basePath+name));
-            //通过输出流将文件写回浏览器，在浏览器展示图片
+            //2.通过输出流将文件写回浏览器，在浏览器展示图片
             //在这里需要通过响应对象获取输出流
             ServletOutputStream outputStream = response.getOutputStream();
 
@@ -86,7 +86,7 @@ public class CommonController {
                 //刷新缓冲区
                 outputStream.flush();
             }
-            //关闭资源
+            //3.关闭资源
             outputStream.close();
             fileInputStream.close();
         } catch (Exception exception) {
