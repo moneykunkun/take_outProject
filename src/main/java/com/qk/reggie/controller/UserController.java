@@ -41,10 +41,11 @@ public class UserController {
             //2.生成4位随机的验证码
             String code = ValidateCodeUtils.generateValidateCode(4).toString();
             log.info("验证码：{}",code);
+
             //3.调用阿里云提供的短信服务API完成短信发送
             //SMSUtils.sendMessage("阿里云已申请到的签名","自定义的模板",phone,code);
-            //4.将生成的验证码保存到session中，用于验证验证码
 
+            //4.将生成的验证码保存到session中，用于验证验证码
             session.setAttribute(phone,code);
             return R.success("手机短信验证码发送成功");
         }
@@ -63,11 +64,11 @@ public class UserController {
 
         log.info(map.toString());
         //获取手机号
-        final String phone = map.get("phone").toString();
+         String phone = map.get("phone").toString();
         //获取验证码
-        final String code = map.get("code").toString();
+         String code = map.get("code").toString();
         //从session中获取保存的验证码
-        final Object codeInSession = session.getAttribute(phone);
+         Object codeInSession = session.getAttribute(phone);
         //页面提交的验证码和session中保存的验证码比对
         if (codeInSession !=null && codeInSession.equals(code)){
             //比对成功，说明登录成功
