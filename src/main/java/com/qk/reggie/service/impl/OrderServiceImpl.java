@@ -68,7 +68,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
              throw new CustomException("地址信息为空，不能下单");
          }
         //向订单表中添加数据
-         long orderId = IdWorker.getId();       //订单号
+         long orderId = IdWorker.getId();       //mp提供的方法生成订单号
 
         //原子操作
         AtomicInteger amount =new AtomicInteger(0);
@@ -111,7 +111,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
     /**
      * 后台查询订单明细
-     *
      * @param page
      * @param pageSize
      * @param number
@@ -133,7 +132,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         //添加排序条件(根据更新时间降序排序)
         queryWrapper.orderByDesc(Orders::getOrderTime);
          this.page(pageInfo, queryWrapper);
-        //将其除了records中的内存复制到pageDto中
+        //将其除了records中的类型复制到pageDto中
         BeanUtils.copyProperties(pageInfo, pageDto, "records");
 
         List<Orders> records = pageInfo.getRecords();

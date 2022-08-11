@@ -104,8 +104,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
     }
 
     /**
-     * 通过id查询套餐信息， 同时还要查询关联表setmeal_dish的菜品信息进行回显。
-     *
+     * 通过id查询套餐信息， 同时还要查询关联表setmeal_dish的菜品信息进行回显
      * @param id 待查询的id
      */
     @Override
