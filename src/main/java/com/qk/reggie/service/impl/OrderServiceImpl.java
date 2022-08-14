@@ -59,7 +59,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
             throw  new CustomException("购物车为空，不能下单");
         }
         //查询用户信息
-        final User user = userService.getById(currentId);
+         User user = userService.getById(currentId);
 
          Long addressBookId = orders.getAddressBookId();
          AddressBook addressBook = addressBookService.getById(addressBookId);
@@ -94,7 +94,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         orders.setAmount(new BigDecimal(amount.get()));     //总金额
         orders.setUserId(currentId);        //用户id
         orders.setNumber(String.valueOf(orderId));      //订单号
-        orders.setUserName(user.getName());
+        orders.setUserName(user.getName());         //用户名
         orders.setConsignee(addressBook.getConsignee());            //收货人
         orders.setPhone(addressBook.getPhone());            //手机号
         orders.setAddress((addressBook.getProvinceName() == null ? "" : addressBook.getProvinceName())

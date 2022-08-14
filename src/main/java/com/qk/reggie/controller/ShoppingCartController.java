@@ -134,7 +134,6 @@ public class ShoppingCartController {
             }else if (LatestNumber < 0){
                 return R.error("操作异常");
             }
-
             return R.success(cart1);
         }
 
