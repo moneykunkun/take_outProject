@@ -188,8 +188,12 @@ public class DishController {
     @PutMapping
     public R<String> update(@RequestBody DishDto dishDto){
         log.info(dishDto.toString());
-
         dishService.updateWithFlavor(dishDto);
+
+        //修改菜品数据时，清理redis中缓存数据
+        String key ="dish_"+dishDto.getCategoryId()+"_1";
+        redisTemplate.delete(key);
+
         return R.success("修改菜品成功");
     }
 
@@ -201,6 +205,7 @@ public class DishController {
 
     @GetMapping("/list")
     public R<List<DishDto>> list(Dish dish){
+
         List<DishDto> dishDtoList =null;
         //动态构造key
         String key ="dish_"+dish.getCategoryId()+"_"+dish.getStatus();            //dish_12345678994545_1
