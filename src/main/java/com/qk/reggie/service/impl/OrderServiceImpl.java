@@ -61,18 +61,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         //查询用户信息
          User user = userService.getById(currentId);
 
+        //查询地址信息
          Long addressBookId = orders.getAddressBookId();
          AddressBook addressBook = addressBookService.getById(addressBookId);
 
          if (addressBook ==null){
-             throw new CustomException("地址信息为空，不能下单");
+             throw new CustomException("地址信息有误，不能下单");
          }
         //向订单表中添加数据
          long orderId = IdWorker.getId();       //mp提供的方法生成订单号
 
-        //原子操作
-        AtomicInteger amount =new AtomicInteger(0);
-        List<OrderDetail> orderDetails = shoppingCarts.stream().map((item)->{
+        AtomicInteger amount = new AtomicInteger(0);
+
+        List<OrderDetail> orderDetails = shoppingCarts.stream().map((item) -> {
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrderId(orderId);
             orderDetail.setNumber(item.getNumber());
@@ -86,26 +87,28 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
             return orderDetail;
         }).collect(Collectors.toList());
 
-        //设置订单实体的其他属性
+
         orders.setId(orderId);
         orders.setOrderTime(LocalDateTime.now());
         orders.setCheckoutTime(LocalDateTime.now());
-        orders.setStatus(2);        //待派送
-        orders.setAmount(new BigDecimal(amount.get()));     //总金额
-        orders.setUserId(currentId);        //用户id
-        orders.setNumber(String.valueOf(orderId));      //订单号
-        orders.setUserName(user.getName());         //用户名
-        orders.setConsignee(addressBook.getConsignee());            //收货人
-        orders.setPhone(addressBook.getPhone());            //手机号
+        orders.setStatus(2);
+        orders.setAmount(new BigDecimal(amount.get()));//总金额
+        orders.setUserId(user.getId());
+        orders.setNumber(String.valueOf(orderId));
+        orders.setUserName(user.getName());
+        orders.setConsignee(addressBook.getConsignee());
+        orders.setPhone(addressBook.getPhone());
         orders.setAddress((addressBook.getProvinceName() == null ? "" : addressBook.getProvinceName())
                 + (addressBook.getCityName() == null ? "" : addressBook.getCityName())
                 + (addressBook.getDistrictName() == null ? "" : addressBook.getDistrictName())
                 + (addressBook.getDetail() == null ? "" : addressBook.getDetail()));
+        //向订单表插入数据，一条数据
         this.save(orders);
+
         //向订单明细表插入数据，多条数据
         orderDetailService.saveBatch(orderDetails);
 
-        //下单完成后，清空购物车数据
+        //清空购物车数据
         shoppingCartService.remove(queryWrapper);
     }
 
