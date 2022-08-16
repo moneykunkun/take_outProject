@@ -79,12 +79,12 @@ public class SetmealController {
             //将item上的普通属性拷贝到setmealDto上
             BeanUtils.copyProperties(item,setmealDto);
             //拿到菜品分类id
-             Long categoryId = item.getCategoryId();
+            Long categoryId = item.getCategoryId();
             //再根据分类id查询分类名称
-             Category category = categoryService.getById(categoryId);
+            Category category = categoryService.getById(categoryId);
             if (category !=null){
                 //拿到分类名称
-                 String categoryName = category.getName();
+                String categoryName = category.getName();
                 setmealDto.setCategoryName(categoryName);
             }
             return setmealDto;
@@ -148,7 +148,7 @@ public class SetmealController {
         //添加一个排序条件
         queryWrapper.orderByDesc(Setmeal::getUpdateTime);
 
-         List<Setmeal> list = setmealService.list(queryWrapper);
+        List<Setmeal> list = setmealService.list(queryWrapper);
         return R.success(list);
     }
     /**
