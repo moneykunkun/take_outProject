@@ -12,6 +12,7 @@ import com.qk.tangren.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -138,6 +139,7 @@ public class SetmealController {
      * @return
      */
     @GetMapping("/list")
+    @Cacheable(value = "setmealCache",key = "#setmeal.categoryId+'_'+#setmeal.status")                  //查询数据前先去缓存中查看，缓存没有再去调用方法
     public R<List<Setmeal>> list(Setmeal setmeal){
         //构造查询条件
         LambdaQueryWrapper<Setmeal> queryWrapper =new LambdaQueryWrapper<>();
