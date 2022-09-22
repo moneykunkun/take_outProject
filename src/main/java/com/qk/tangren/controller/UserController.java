@@ -49,9 +49,9 @@ public class UserController {
             //SMSUtils.sendMessage("阿里云已申请到的签名","自定义的模板",phone,code);
 
             //4.将生成的验证码保存到session中，用于验证验证码
-            session.setAttribute(phone,code);
+           //session.setAttribute(phone,code);
 
-            //4-1 将生成的验证码缓存到redis中
+            //4-1 将生成的验证码缓存到redis中,设置有效时间为5分钟
             redisTemplate.opsForValue().set(phone,code,5, TimeUnit.MINUTES);
             return R.success("手机短信验证码发送成功");
         }
