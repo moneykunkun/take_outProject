@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Slf4j    //加载日志
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
-@ServletComponentScan               //扫描过滤器
+@ServletComponentScan                      //扫描过滤器
 @EnableTransactionManagement        //开启事务
-@EnableCaching                      //开启缓存
+@EnableCaching                                   //开启Spring cache缓存
 public class ReggieApplication {
     public static void main(String[] args) {
         SpringApplication.run(ReggieApplication.class,args);

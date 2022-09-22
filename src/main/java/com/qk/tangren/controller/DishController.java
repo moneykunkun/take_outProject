@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -194,7 +195,10 @@ public class DishController {
         log.info(dishDto.toString());
         dishService.updateWithFlavor(dishDto);
 
-        //修改菜品数据时，清理redis中缓存数据
+        //修改菜品数据时，清理redis中全部缓存数据
+        // Set keys = redisTemplate.keys("dish_*");
+
+         //精确清理缓存数据
         String key ="dish_"+dishDto.getCategoryId()+"_1";
         redisTemplate.delete(key);
 
@@ -260,7 +264,7 @@ public class DishController {
            dishDto.setFlavors(flavorList);
             return dishDto;
         }).collect(Collectors.toList());
-        //并将数据缓存到redis中,缓存时间1小时
+        //缓存中数据不存在，就将数据缓存到redis中,缓存时间1小时
         redisTemplate.opsForValue().set(key,dishDtoList,1, TimeUnit.HOURS);
 
         return R.success(dishDtoList);
